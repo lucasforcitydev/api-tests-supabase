@@ -1,0 +1,906 @@
+{
+  "info": {
+    "_postman_id": "5b30f5e3-a69f-4741-9b8c-14fc109b3794",
+    "name": "Supabase API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53896725",
+    "_collection_link": "https://go.postman.co/collection/53896725-5b30f5e3-a69f-4741-9b8c-14fc109b3794?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET",
+      "item": [
+        {
+          "name": "GET - Return_dados",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Lista não vazia\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Estrutura correta\", () => {\r",
+                  "    const data = pm.response.json()[0];\r",
+                  "\r",
+                  "    pm.expect(data).to.have.property(\"id\");\r",
+                  "    pm.expect(data).to.have.property(\"title\");\r",
+                  "    pm.expect(data).to.have.property(\"content\");\r",
+                  "    pm.expect(data).to.have.property(\"user_id\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Retorno vazio\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data.length).to.eql(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.2000",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.2000",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Post by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Retorna apenas 1 item\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data.length).to.eql(1);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"ID correto\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data[0].id).to.eql(1);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.1",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "POST",
+      "item": [
+        {
+          "name": "POST - Create Invalid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Erro esperado (400 ou 422)\", () => {\r",
+                  "    pm.expect([400, 422]).to.include(pm.response.code);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"\",\r\n  \"content\": \"\",\r\n  \"user_id\": \"abc\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Create Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201\", () => {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Retorna objeto criado\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data.length).to.eql(1);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tem ID\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data[0]).to.have.property(\"id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Dados corretos\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data[0].title).to.eql(\"Post criado via teste\");\r",
+                  "});\r",
+                  "\r",
+                  "const data = pm.response.json();\r",
+                  "pm.collectionVariables.set(\"post_id\", data[0].id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Post criado via teste\",\r\n  \"content\": \"Validando criação\",\r\n  \"user_id\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Validate Created Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Registro existe\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data.length).to.eql(1);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"ID correto\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data[0].id).to.eql(pm.collectionVariables.get(\"post_id\"));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.{{post_id}}",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.{{post_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PATCH",
+      "item": [
+        {
+          "name": "PATCH - Update Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Atualizou 1 registro\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data.length).to.eql(1);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Título atualizado\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data[0].title).to.eql(\"Post atualizado via teste\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Post atualizado via teste\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.{{post_id}}",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.{{post_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH - Update Invalid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Erro esperado (400 ou 422)\", () => {\r",
+                  "    pm.expect([400, 422]).to.include(pm.response.code);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user_id\": \"abc\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.{{post_id}}",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.{{post_id}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Validate Updated Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Update persistido\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data[0].title).to.eql(\"Post atualizado via teste\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.{{post_id}}",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.{{post_id}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "DELETE",
+      "item": [
+        {
+          "name": "DELETE - Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200 ou 204\", () => {\r",
+                  "    pm.expect([200, 204]).to.include(pm.response.code);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "pm.test(\"Status 200 ou 204\", () => {\r\n    pm.expect([200, 204]).to.include(pm.response.code);\r\n});",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.{{post_id}}",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.{{post_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Already Deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status consistente\", () => {\r",
+                  "    pm.expect([200, 204]).to.include(pm.response.code);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.{{post_id}}",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.{{post_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Validate Deleted Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Registro não existe mais\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data.length).to.eql(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts?id=eq.{{post_id}}",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.{{post_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth Tests",
+      "item": [
+        {
+          "name": "GET - Invalid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Sem token deve falhar\", () => {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "TOKEN_INVALIDO",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer TOKEN_INVALIDO",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Performance",
+      "item": [
+        {
+          "name": "Response Time",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Performance OK\", function () {\r",
+                  "    const time = pm.response.responseTime;\r",
+                  "\r",
+                  "    pm.expect(time).to.be.below(800);\r",
+                  "\r",
+                  "    console.log(\"Response time:\", time);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts",
+              "protocol": "https",
+              "host": [
+                "zwsktukegumwavgtknwm",
+                "supabase",
+                "co"
+              ],
+              "path": [
+                "rest",
+                "v1",
+                "posts"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Healthcheck",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"API online (status 200)\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Tempo < 1000ms\", () => {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://zwsktukegumwavgtknwm.supabase.co/rest/v1/posts",
+          "protocol": "https",
+          "host": [
+            "zwsktukegumwavgtknwm",
+            "supabase",
+            "co"
+          ],
+          "path": [
+            "rest",
+            "v1",
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3c2t0dWtlZ3Vtd2F2Z3RrbndtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NDMyMzAsImV4cCI6MjA5MTMxOTIzMH0.n8X2bdIKXQ-nSYMjgrp8L4o_xpHyW3eG0bWzypr2_M0",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.request.headers.add({\r",
+          "    key: \"apikey\",\r",
+          "    value: pm.collectionVariables.get(\"api_key\") || \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3c2t0dWtlZ3Vtd2F2Z3RrbndtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NDMyMzAsImV4cCI6MjA5MTMxOTIzMH0.n8X2bdIKXQ-nSYMjgrp8L4o_xpHyW3eG0bWzypr2_M0\"\r",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "api_key",
+      "value": ""
+    },
+    {
+      "key": "post_id",
+      "value": ""
+    }
+  ]
+}
